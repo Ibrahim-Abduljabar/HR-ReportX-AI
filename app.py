@@ -93,7 +93,6 @@ for form_id in st.session_state.forms:
 
 if st.button("إضافة تقرير جديد"):
     st.session_state.forms.append(len(st.session_state.forms) + 1)
-    st.experimental_rerun()
 
 st.markdown("---")
 st.markdown("### اضغط Ctrl + P لتحويل الصفحة إلى PDF")
