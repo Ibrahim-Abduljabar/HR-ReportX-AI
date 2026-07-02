@@ -53,7 +53,7 @@ def render_form(form_id):
         """
 
         payload = {
-            "model": "mixtral-8x7b-32768",
+            "model": "mixtral-8x7b-32768",   
             "messages": [
                 {"role": "user", "content": f"حلل البيانات التالية واكتب تقرير HR احترافي:\n\n{final_input}"}
             ]
@@ -72,20 +72,16 @@ def render_form(form_id):
                 timeout=10
             )
 
-            st.success("تم توليد التقرير!")
             st.write("Status:", response.status_code)
 
             if response.status_code == 200:
                 result = response.json()
                 content = result["choices"][0]["message"]["content"]
+                st.success("تم توليد التقرير!")
                 st.write(content)
             else:
                 st.error(response.text)
 
-        except requests.exceptions.ConnectionError:
-            st.error("تعذر الاتصال بسيرفر Groq. تأكد أن الإنترنت يعمل.")
-        except requests.exceptions.Timeout:
-            st.error("انتهى وقت الاتصال بسيرفر Groq.")
         except Exception as e:
             st.error(f"خطأ غير متوقع: {e}")
 
