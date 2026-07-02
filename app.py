@@ -2,11 +2,10 @@ import streamlit as st
 import pandas as pd
 import requests
 import PyPDF2
-from google.colab import userdata
 
 st.set_page_config(page_title="HR ReportX AI", layout="wide")
 
-API_KEY = userdata.get("API_hrhr")
+API_KEY = st.secrets["API_hrhr"]
 
 st.title("HR ReportX AI")
 st.write("منصة توليد تقارير HR باستخدام requests فقط.")
@@ -30,7 +29,11 @@ def render_form(form_id):
 
         file_text = ""
         if uploaded_file:
-            if uploaded_file.type in ["application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv"]:
+            if uploaded_file.type in [
+                "application/vnd.ms-excel",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "text/csv"
+            ]:
                 df = pd.read_csv(uploaded_file) if uploaded_file.type == "text/csv" else pd.read_excel(uploaded_file)
                 file_text = df.to_string()
 
@@ -48,7 +51,7 @@ def render_form(form_id):
         headers = {"Authorization": f"Bearer {API_KEY}"}
 
         response = requests.post(
-            "https://example.com/hr-reportx-ai",  # رابط API الوهمي
+            "https://example.com/hr-reportx-ai",
             json=payload,
             headers=headers
         )
