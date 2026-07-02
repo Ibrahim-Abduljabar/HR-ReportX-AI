@@ -8,7 +8,7 @@ st.set_page_config(page_title="HR ReportX AI", layout="wide")
 API_KEY = st.secrets["API_hrhr"]
 
 st.title("HR ReportX AI")
-st.write("منصة توليد تقارير الموارد البشرية باستخدام Groq AI.")
+st.write("منصة توليد تقارير الموارد البشرية باستخدام Groq Llama3‑70B.")
 
 if "forms" not in st.session_state:
     st.session_state.forms = [1]
@@ -53,9 +53,12 @@ def render_form(form_id):
         """
 
         payload = {
-            "model": "mixtral-8x7b-32768",   
+            "model": "llama3-70b-8192",
             "messages": [
-                {"role": "user", "content": f"حلل البيانات التالية واكتب تقرير HR احترافي:\n\n{final_input}"}
+                {
+                    "role": "user",
+                    "content": f"حلل البيانات التالية واكتب تقرير HR احترافي ومفصل:\n\n{final_input}"
+                }
             ]
         }
 
@@ -69,7 +72,7 @@ def render_form(form_id):
                 "https://api.groq.com/openai/v1/chat/completions",
                 json=payload,
                 headers=headers,
-                timeout=10
+                timeout=15
             )
 
             st.write("Status:", response.status_code)
