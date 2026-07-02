@@ -8,7 +8,7 @@ st.set_page_config(page_title="HR ReportX AI", layout="wide")
 API_KEY = st.secrets["API_hrhr"]
 
 st.title("HR ReportX AI")
-st.write("منصة توليد تقارير HR باستخدام requests فقط.")
+st.write("منصة توليد تقارير الموارد البشرية باستخدام الذكاء الاصطناعي.")
 
 if "forms" not in st.session_state:
     st.session_state.forms = [1]
@@ -40,25 +40,31 @@ def render_form(form_id):
             elif uploaded_file.type == "application/pdf":
                 reader = PyPDF2.PdfReader(uploaded_file)
                 for page in reader.pages:
-                    file_text += page.extract_text()
+                    text = page.extract_text()
+                    if text:
+                        file_text += text
 
+       
         payload = {
             "title": title,
             "description": desc,
             "file_content": file_text
         }
 
-        headers = {"Authorization": f"Bearer {API_KEY}"}
+        headers = {
+            "Authorization": f"Bearer {API_KEY}",
+            "Content-Type": "application/json"
+        }
 
         response = requests.post(
-            "https://example.com/hr-reportx-ai",
+            "https://YOUR_REAL_API_URL_HERE",   
             json=payload,
             headers=headers
         )
 
-        st.success("تم توليد التقرير بنجاح!")
-        st.write("نتيجة الـ API:")
-        st.write(response.text if response.status_code == 200 else "خطأ في الاتصال بالـ API")
+        st.success("تم توليد التقرير!")
+        st.write("Status:", response.status_code)
+        st.write("Response:", response.text)
 
 for form_id in st.session_state.forms:
     render_form(form_id)
