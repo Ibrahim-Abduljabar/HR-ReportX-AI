@@ -8,7 +8,7 @@ st.set_page_config(page_title="HR ReportX AI", layout="wide")
 API_KEY = st.secrets["API_hrhr"]
 
 st.title("HR ReportX AI")
-st.write("منصة توليد تقارير الموارد البشرية باستخدام Groq Llama3‑70B.")
+st.write("منصة توليد تقارير الموارد البشرية باستخدام Groq Llama 3.3 70B.")
 
 if "forms" not in st.session_state:
     st.session_state.forms = [1]
@@ -53,7 +53,7 @@ def render_form(form_id):
         """
 
         payload = {
-            "model": "llama3-70b-8192",
+            "model": "llama-3.3-70b-versatile",
             "messages": [
                 {
                     "role": "user",
@@ -96,4 +96,4 @@ if st.button("إضافة تقرير جديد"):
     st.experimental_rerun()
 
 st.markdown("---")
-st.markdown("### لتحويل الصفحة إلى PDF اضغط **Ctrl + P**")
+st.markdown("### اضغط Ctrl + P لتحويل الصفحة إلى PDF")
