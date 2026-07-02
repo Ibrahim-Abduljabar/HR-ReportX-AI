@@ -8,7 +8,7 @@ st.set_page_config(page_title="HR ReportX AI", layout="wide")
 API_KEY = st.secrets["API_hrhr"]
 
 st.title("HR ReportX AI")
-st.write("منصة توليد تقارير الموارد البشرية باستخدام الذكاء الاصطناعي.")
+st.write("منصة توليد تقارير الموارد البشرية باستخدام Groq AI.")
 
 if "forms" not in st.session_state:
     st.session_state.forms = [1]
@@ -44,11 +44,19 @@ def render_form(form_id):
                     if text:
                         file_text += text
 
-       
+        final_input = f"""
+عنوان التقرير: {title}
+وصف التقرير: {desc}
+
+محتوى الملف:
+{file_text}
+        """
+
         payload = {
-            "title": title,
-            "description": desc,
-            "file_content": file_text
+            "model": "mixtral-8x7b-32768",
+            "messages": [
+                {"role": "user", "content": f"حلل البيانات التالية واكتب تقرير HR احترافي:\n\n{final_input}"}
+            ]
         }
 
         headers = {
@@ -56,15 +64,30 @@ def render_form(form_id):
             "Content-Type": "application/json"
         }
 
-        response = requests.post(
-            "https://YOUR_REAL_API_URL_HERE",   
-            json=payload,
-            headers=headers
-        )
+        try:
+            response = requests.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                json=payload,
+                headers=headers,
+                timeout=10
+            )
 
-        st.success("تم توليد التقرير!")
-        st.write("Status:", response.status_code)
-        st.write("Response:", response.text)
+            st.success("تم توليد التقرير!")
+            st.write("Status:", response.status_code)
+
+            if response.status_code == 200:
+                result = response.json()
+                content = result["choices"][0]["message"]["content"]
+                st.write(content)
+            else:
+                st.error(response.text)
+
+        except requests.exceptions.ConnectionError:
+            st.error("تعذر الاتصال بسيرفر Groq. تأكد أن الإنترنت يعمل.")
+        except requests.exceptions.Timeout:
+            st.error("انتهى وقت الاتصال بسيرفر Groq.")
+        except Exception as e:
+            st.error(f"خطأ غير متوقع: {e}")
 
 for form_id in st.session_state.forms:
     render_form(form_id)
