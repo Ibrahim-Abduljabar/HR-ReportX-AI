@@ -2,7 +2,10 @@ import streamlit as st
 import pandas as pd
 import requests
 import PyPDF2
+from logsnag import LogSnag
 
+log_client = LogSnag(token=st.secrets["LOGSNAG_TOKEN"], project="hr-reportx-ai")
+log_client.track(channel="visits", event="New Visit")
 st.set_page_config(page_title="HR ReportX AI", layout="wide")
 
 API_KEY = st.secrets["API_hrhr"]
